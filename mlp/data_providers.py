@@ -75,6 +75,9 @@ class DataProvider(object):
         self.inputs = self.inputs[new_order]
         self.targets = self.targets[new_order]
 
+    def __next__(self):
+        return self.next()
+
     def next(self):
         """Returns next data batch or raises `StopIteration` if at end."""
         if self._curr_batch + 1 > self.num_batches:
@@ -164,14 +167,14 @@ class MetOfficeDataProvider(DataProvider):
     """South Scotland Met Office weather data provider."""
 
     def __init__(self, window_size, batch_size=10, max_num_batches=-1,
-                shuffle_order=True, rng=None):
-        """Create a new Met Offfice data provider object.
+                 shuffle_order=True, rng=None):
+        """Create a new Met Office data provider object.
 
         Args:
             window_size (int): Size of windows to split weather time series
-            data into. The constructed input features will be the first
-            `window_size - 1` entries in each window and the target outputs
-            the last entry in each window.
+               data into. The constructed input features will be the first
+               `window_size - 1` entries in each window and the target outputs
+               the last entry in each window.
             batch_size (int): Number of data points to include in each batch.
             max_num_batches (int): Maximum number of batches to iterate over
                 in an epoch. If `max_num_batches * batch_size > num_data` then
@@ -181,8 +184,6 @@ class MetOfficeDataProvider(DataProvider):
                 the data before each epoch.
             rng (RandomState): A seeded random number generator.
         """
-        self.window_size = window_size
-        assert window_size > 1, 'window_size must be at least 2.'
         data_path = os.path.join(
             os.environ['MLP_DATA_DIR'], 'HadSSP_daily_qc.txt')
         assert os.path.isfile(data_path), (
