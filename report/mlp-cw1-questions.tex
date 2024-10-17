@@ -1,5 +1,5 @@
 %% REPLACE SXXXXXX with your student number
-\def\studentNumber{SXXXXXX}
+\def\studentNumber{S2570340}
 
 
 %% START of YOUR ANSWERS
@@ -26,7 +26,7 @@
 
 %% Question 1:
 \newcommand{\questionOne} {
-\youranswer{Question 1 - Explain what these figures contain and how the curves evolve, and spot where overfitting occurs. Reason based on the min/max points and velocities (direction and magnitude of change) of the accuracy and error curves}
+\youranswer{The figures 1a and 1b contain training + validation errors and training + validation accuracy for a baseline model on the EMNIST dataset, respectively. As the weights and biases get updated (as the iteration goes), the model's errors get lower and accuracy get higher (for both training and validation sets). This is the case for these specific figures for the first few iterations, before the validation error and accuracy deviate from the training, with the error getting even higher than the first iteration after ~40 iterations, and the accuracy gradually lowering, until after 100 iterations, they reach ~1.6 and ~0.81 for the validation error and accuracy, respectively. In constrast, the training error reaches a value close to 0 and the accuracy reaches >0.95. This is the case of overfitting, where the model fails to generalise for a wide variety of inputs.}
 }
 
 %% Question 2:
