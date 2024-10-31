@@ -295,7 +295,12 @@ class EMNISTDataProvider(DataProvider):
         (num_data, num_classes)
 
         """
-        
+        K = np.max(int_targets) + 1
+        onehot = self.to_one_of_k(int_targets)
+        onehot[onehot == 1] = 1 - alpha
+        onehot[onehot == 0] = alpha / (K - 1)
+
+        return onehot
         raise NotImplementedError
   
     
