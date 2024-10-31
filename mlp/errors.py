@@ -167,10 +167,12 @@ class CrossEntropySoftmaxError(object):
 
         Returns:
             Gradient of error function with respect to outputs.
+            Gradient of error function with respect to outputs.
         """
         probs = np.exp(outputs - outputs.max(-1)[:, None])
         probs /= probs.sum(-1)[:, None]
         return (probs - targets) / outputs.shape[0]
 
     def __repr__(self):
+        return 'CrossEntropySoftmaxError'
         return 'CrossEntropySoftmaxError'

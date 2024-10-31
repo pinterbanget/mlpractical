@@ -227,6 +227,7 @@ class AffineLayer(LayerWithParameters):
                  weights_initialiser=init.UniformInit(-0.1, 0.1),
                  biases_initialiser=init.ConstantInit(0.),
                  weights_penalty=None, biases_penalty=None):
+                 weights_penalty=None, biases_penalty=None):
         """Initialises a parameterised affine layer.
 
         Args:
@@ -238,11 +239,17 @@ class AffineLayer(LayerWithParameters):
                 None if no regularisation is to be applied to the weights.
             biases_penalty: Biases-dependent penalty term (regulariser) or
                 None if no regularisation is to be applied to the biases.
+            weights_penalty: Weights-dependent penalty term (regulariser) or
+                None if no regularisation is to be applied to the weights.
+            biases_penalty: Biases-dependent penalty term (regulariser) or
+                None if no regularisation is to be applied to the biases.
         """
         self.input_dim = input_dim
         self.output_dim = output_dim
         self.weights = weights_initialiser((self.output_dim, self.input_dim))
         self.biases = biases_initialiser(self.output_dim)
+        self.weights_penalty = weights_penalty
+        self.biases_penalty = biases_penalty
         self.weights_penalty = weights_penalty
         self.biases_penalty = biases_penalty
 
@@ -258,6 +265,26 @@ class AffineLayer(LayerWithParameters):
         Returns:
             outputs: Array of layer outputs of shape (batch_size, output_dim).
         """
+        return self.weights.dot(inputs.T).T + self.biases
+
+    def bprop(self, inputs, outputs, grads_wrt_outputs):
+        """Back propagates gradients through a layer.
+
+        Given gradients with respect to the outputs of the layer calculates the
+        gradients with respect to the layer inputs.
+
+        Args:
+            inputs: Array of layer inputs of shape (batch_size, input_dim).
+            outputs: Array of layer outputs calculated in forward pass of
+                shape (batch_size, output_dim).
+            grads_wrt_outputs: Array of gradients with respect to the layer
+                outputs of shape (batch_size, output_dim).
+
+        Returns:
+            Array of gradients with respect to the layer inputs of shape
+            (batch_size, input_dim).
+        """
+        return grads_wrt_outputs.dot(self.weights)
         return self.weights.dot(inputs.T).T + self.biases
 
     def bprop(self, inputs, outputs, grads_wrt_outputs):
@@ -319,6 +346,11 @@ class AffineLayer(LayerWithParameters):
     def params(self):
         """A list of layer parameter values: `[weights, biases]`."""
         return [self.weights, self.biases]
+
+    @params.setter
+    def params(self, values):
+        self.weights = values[0]
+        self.biases = values[1]
 
     @params.setter
     def params(self, values):
