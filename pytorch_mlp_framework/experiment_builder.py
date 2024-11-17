@@ -39,6 +39,10 @@ class ExperimentBuilder(nn.Module):
             self.device =  torch.device('cuda')
             self.model.to(self.device)  # sends the model from the cpu to the gpu
             print('Use GPU', self.device)
+        elif torch.backends.mps.is_built():
+            self.device = torch.device('mps')
+            self.model.to(self.device)
+            print('Use MPS')
         else:
             print("use CPU")
             self.device = torch.device('cpu')  # sets the device to be CPU
@@ -146,11 +150,17 @@ class ExperimentBuilder(nn.Module):
         layers = []
         
         """
-        Complete the code in the block below to collect absolute mean of the gradients for each layer in all_grads with the             layer names in layers.
+        Complete the code in the block below to collect absolute mean of the gradients for each layer in all_grads with the layer names in layers.
         """
         ########################################
         #TODO write your code here
-        
+        for name, param in named_parameters:
+            if "weight" in name:
+                layers.append(name.replace('layer_dict.', '').replace('.weight', ''))
+                all_grads.append(np.mean(np.abs(param.grad.cpu().detach().numpy())))
+
+
+
         ########################################
             
         
